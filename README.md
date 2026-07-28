@@ -38,94 +38,109 @@ seed-0 mechanism result, not a statistically established transition point.
 
 ### Signal and nuisance dictionaries
 
-Tokens live in an ambient space of dimension `d1=100`. A random Gaussian
-matrix is orthogonalized by QR and split into
+Each token is a vector in an ambient space of dimension `d1=100`. We sample a
+`100 x 100` Gaussian matrix, orthogonalize it by QR decomposition, and split
+the resulting orthonormal basis into a signal dictionary and a nuisance
+dictionary:
 
-$$
-\mathcal{O}=[\,M\;\;M_\perp\,],
-$$
-
-where
-
-$$
-M\in\mathbb{R}^{100\times20},
+```math
+O = [\,M \;\; M_{\perp}\,],
 \qquad
-M_\perp\in\mathbb{R}^{100\times80}.
-$$
-
-The signal dictionary is divided into two groups:
-
-$$
-M=[\,M_1\;\;M_2\,],
+M \in \mathbb{R}^{100 \times 20},
 \qquad
-M_1,M_2\in\mathbb{R}^{100\times10}.
-$$
+M_{\perp} \in \mathbb{R}^{100 \times 80}.
+```
 
-The dictionaries satisfy
+The 20 signal directions are divided into two groups of 10:
 
-$$
-M^\top M=I,\qquad
-M_\perp^\top M_\perp=I,\qquad
-M^\top M_\perp=0.
-$$
+```math
+M = [\,M_1 \;\; M_2\,],
+\qquad
+M_1,M_2 \in \mathbb{R}^{100 \times 10}.
+```
 
-Thus, M1 and M2 are signal features, while Mperp is an orthogonal nuisance
-subspace. Every signal and nuisance token has unit norm.
+Because all columns come from one orthonormal basis,
+
+```math
+M^{\mathsf T}M=I,
+\qquad
+M_{\perp}^{\mathsf T}M_{\perp}=I,
+\qquad
+M^{\mathsf T}M_{\perp}=0.
+```
+
+Therefore:
+
+- `M1` and `M2` contain the useful signal features.
+- `Mperp` contains nuisance features orthogonal to every signal feature.
+- Every signal and nuisance token has Euclidean norm one.
 
 ### Fixed five-signal sampling
 
-Each sample is a sequence
+One sample is a sequence of `K` row vectors:
 
-$$
-X=[x_1,\ldots,x_K]^\top\in\mathbb{R}^{K\times100}.
-$$
+```math
+X =
+\begin{bmatrix}
+x_1^{\mathsf T}\\
+\vdots\\
+x_K^{\mathsf T}
+\end{bmatrix}
+\in \mathbb{R}^{K \times 100}.
+```
 
-Every sample contains exactly five signal tokens and `K-5` Mperp tokens. This
-is **not** an iid token-type model: increasing K does not increase the number
-of signal tokens.
+Every sample contains **exactly five signal tokens** and `K-5` nuisance
+tokens. Increasing `K` therefore adds only nuisance tokens; it never increases
+the signal-token count.
 
-For each of the five signal slots, independently sample its group:
+For each of the five signal positions, independently choose its group:
 
-$$
-\Pr(g_s=\mathrm{M1})=0.8,
+```math
+\Pr(g_s=M_1)=0.8,
 \qquad
-\Pr(g_s=\mathrm{M2})=0.2.
-$$
+\Pr(g_s=M_2)=0.2.
+```
 
-Therefore
+Consequently, the number of M1 tokens follows a binomial distribution:
 
-$$
-n_{\mathrm{M1}}\sim\operatorname{Binomial}(5,0.8),
+```math
+n_{M_1} \sim \mathrm{Binomial}(5,0.8),
 \qquad
-n_{\mathrm{M2}}=5-n_{\mathrm{M1}},
-$$
+n_{M_2}=5-n_{M_1},
+```
 
-with expected counts
+and
 
-$$
-\mathbb{E}[n_{\mathrm{M1}}]=4,
+```math
+\mathbb{E}[n_{M_1}]=4,
 \qquad
-\mathbb{E}[n_{\mathrm{M2}}]=1.
-$$
+\mathbb{E}[n_{M_2}]=1.
+```
 
-The realized counts vary by sample. Conditional on the group counts, features
-are sampled **without replacement** inside each group, so the five signal
-features are always distinct:
+The realized M1/M2 counts vary across samples. After choosing the counts,
+feature indices are sampled **without replacement** within each group.
+Therefore, all five signal tokens correspond to distinct signal features. A
+signal token is one column of `M1` or `M2`:
 
-$$
-x_s=M_{:,j_s}.
-$$
+```math
+x_s = M_{:,j_s}.
+```
 
-Each nuisance token independently samples one Mperp column:
+Each nuisance token independently selects one of the 80 columns of
+`Mperp`:
 
-$$
-r\sim\operatorname{Uniform}\{1,\ldots,80\},
+```math
+r \sim \mathrm{Uniform}(\{1,\ldots,80\}),
 \qquad
 x_{\mathrm{noise}}=M_{\perp,:,r}.
-$$
+```
 
-Signal and nuisance tokens are concatenated and randomly permuted. There is no
-additive Gaussian noise and no M1/M2 amplitude difference in this experiment.
+Finally, the five signal tokens and `K-5` nuisance tokens are randomly
+permuted. This experiment uses:
+
+- no additive Gaussian noise;
+- no amplitude difference between M1, M2, and Mperp tokens;
+- no positional encoding.
 
 The sweep changes only the number of Mperp tokens:
 
@@ -140,84 +155,100 @@ The sweep changes only the number of Mperp tokens:
 
 ### Binary teacher and target
 
-The latent vector
+The latent vector records which of the 20 signal features occur in the
+sequence:
 
-$$
-z\in\{0,1\}^{20}
-$$
+```math
+z \in \{0,1\}^{20},
+\qquad
+z_j =
+\begin{cases}
+1 & \text{if signal feature } j \text{ occurs in } X,\\
+0 & \text{otherwise}.
+\end{cases}
+```
 
-records feature presence. Because all five signal features are distinct,
+All five signal features are distinct, hence
 
-$$
+```math
 \lVert z\rVert_0=5.
-$$
+```
 
-Mperp tokens do not activate any coordinate of z. The fixed teacher is
+Mperp tokens never activate a coordinate of `z`.
 
-$$
-W_{\mathrm{true}}\in\{0,1\}^{50\times20}.
-$$
+The teacher is a fixed binary matrix:
 
-Every teacher column contains exactly five ones (`density=0.1`). The target is
+```math
+W_{\mathrm{true}} \in \{0,1\}^{50 \times 20}.
+```
 
-$$
-y=W_{\mathrm{true}}z\in\mathbb{R}^{50}.
-$$
+Each column of `W_true` contains exactly five ones, corresponding to binary
+density `0.1`. The regression target is
 
-Thus, y is the sum of the five binary code columns corresponding to the active
-signal features. The teacher does not reweight M1 and M2.
+```math
+y = W_{\mathrm{true}}z \in \mathbb{R}^{50}.
+```
+
+Thus, `y` is the sum of the five teacher-code columns selected by the active
+signal features. M1 and M2 use the same teacher construction and receive no
+additional label weighting.
 
 ## Model
 
 The network is a single-head softmax attention layer followed by a ReLU value
 map, sum pooling, and a linear readout:
 
-$$
-Q=XW_Q,\qquad K_{\mathrm{att}}=XW_K,
-$$
+```math
+Q=XW_Q,
+\qquad
+K_{\mathrm{att}}=XW_K.
+```
 
-$$
-A=\operatorname{softmax}
-\left(
-\frac{QK_{\mathrm{att}}^\top}{\sqrt{d_{qk}}}
+The row-wise attention matrix and denoised token representation are
+
+```math
+A =
+\mathrm{softmax}\!\left(
+\frac{QK_{\mathrm{att}}^{\mathsf T}}{\sqrt{d_{qk}}}
 \right),
 \qquad
-\widetilde X=AX,
-$$
+\widetilde X=AX.
+```
 
-$$
-V=\operatorname{ReLU}(\widetilde XW_V),
+The value map, pooling operation, and prediction are
+
+```math
+V=\mathrm{ReLU}(\widetilde XW_V),
 \qquad
-h=\sum_{k=1}^{K}V_k,
-$$
-
-$$
-\widehat y=hW_{\mathrm{out}}^\top.
-$$
+h=\sum_{k=1}^{K}V_{k,:},
+\qquad
+\widehat y=hW_{\mathrm{out}}^{\mathsf T}.
+```
 
 There is no additional MLP. Pooling is a **sum**, not a mean, so readout scale
 can depend on K.
 
-Matrix dimensions are
-
-$$
-W_Q,W_K,W_V\in\mathbb{R}^{100\times100},
-\qquad
-W_{\mathrm{out}}\in\mathbb{R}^{50\times100}.
-$$
+| Quantity | Shape |
+|---|---:|
+| `X`, `X_tilde` | `K x 100` |
+| `WQ`, `WK`, `WV` | `100 x 100` |
+| `Q`, `K_att`, `V` | `K x 100` |
+| `A` | `K x K` |
+| `h` | `100` |
+| `Wout` | `50 x 100` |
+| `y_hat`, `y` | `50` |
 
 For minibatch size `N=32`, the training objective is
 
-$$
+```math
 \mathcal{L}
 =
-\frac{1}{N}
+\frac{1}{2N}
 \sum_{i=1}^{N}
-\frac{1}{2}
 \left\lVert
 \widehat y^{(i)}-y^{(i)}
 \right\rVert_2^2.
-$$
+```
 
 See [docs/EXPERIMENT_202.md](docs/EXPERIMENT_202.md) for the complete data
 model, optimizer, dimensions, and evaluation protocol. See
