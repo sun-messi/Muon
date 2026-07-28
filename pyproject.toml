@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "adaptive-muon-sparse-attention"
+version = "0.1.0"
+description = "Minimal experiments for adaptive low-rank Muon on sparse attention regression."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "matplotlib>=3.7",
+  "numpy>=1.24",
+  "torch>=2.1",
+]
+
+[project.scripts]
+muon-train = "muon_sparse_attention.train:main"
+muon-sweep = "muon_sparse_attention.sweep:main"
+muon-plot = "muon_sparse_attention.plot:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
