@@ -34,18 +34,190 @@ seed-0 mechanism result, not a statistically established transition point.
 
 ![Adaptive loss delta across K](results/experiment_202/000_heatmap_adaptiveWVWout_all_eval_delta_vs_muon.png)
 
+## Data model
+
+### Signal and nuisance dictionaries
+
+Tokens live in an ambient space of dimension `d1=100`. A random Gaussian
+matrix is orthogonalized by QR and split into
+
+$$
+\mathcal{O}=[\,M\;\;M_\perp\,],
+$$
+
+where
+
+$$
+M\in\mathbb{R}^{100\times20},
+\qquad
+M_\perp\in\mathbb{R}^{100\times80}.
+$$
+
+The signal dictionary is divided into two groups:
+
+$$
+M=[\,M_1\;\;M_2\,],
+\qquad
+M_1,M_2\in\mathbb{R}^{100\times10}.
+$$
+
+The dictionaries satisfy
+
+$$
+M^\top M=I,\qquad
+M_\perp^\top M_\perp=I,\qquad
+M^\top M_\perp=0.
+$$
+
+Thus, M1 and M2 are signal features, while Mperp is an orthogonal nuisance
+subspace. Every signal and nuisance token has unit norm.
+
+### Fixed five-signal sampling
+
+Each sample is a sequence
+
+$$
+X=[x_1,\ldots,x_K]^\top\in\mathbb{R}^{K\times100}.
+$$
+
+Every sample contains exactly five signal tokens and `K-5` Mperp tokens. This
+is **not** an iid token-type model: increasing K does not increase the number
+of signal tokens.
+
+For each of the five signal slots, independently sample its group:
+
+$$
+\Pr(g_s=\mathrm{M1})=0.8,
+\qquad
+\Pr(g_s=\mathrm{M2})=0.2.
+$$
+
+Therefore
+
+$$
+n_{\mathrm{M1}}\sim\operatorname{Binomial}(5,0.8),
+\qquad
+n_{\mathrm{M2}}=5-n_{\mathrm{M1}},
+$$
+
+with expected counts
+
+$$
+\mathbb{E}[n_{\mathrm{M1}}]=4,
+\qquad
+\mathbb{E}[n_{\mathrm{M2}}]=1.
+$$
+
+The realized counts vary by sample. Conditional on the group counts, features
+are sampled **without replacement** inside each group, so the five signal
+features are always distinct:
+
+$$
+x_s=M_{:,j_s}.
+$$
+
+Each nuisance token independently samples one Mperp column:
+
+$$
+r\sim\operatorname{Uniform}\{1,\ldots,80\},
+\qquad
+x_{\mathrm{noise}}=M_{\perp,:,r}.
+$$
+
+Signal and nuisance tokens are concatenated and randomly permuted. There is no
+additive Gaussian noise and no M1/M2 amplitude difference in this experiment.
+
+The sweep changes only the number of Mperp tokens:
+
+| K | signal tokens | Mperp tokens | expected M1 | expected M2 |
+|---:|---:|---:|---:|---:|
+| 18 | 5 | 13 | 4 | 1 |
+| 20 | 5 | 15 | 4 | 1 |
+| 23 | 5 | 18 | 4 | 1 |
+| 25 | 5 | 20 | 4 | 1 |
+| 28 | 5 | 23 | 4 | 1 |
+| 30 | 5 | 25 | 4 | 1 |
+
+### Binary teacher and target
+
+The latent vector
+
+$$
+z\in\{0,1\}^{20}
+$$
+
+records feature presence. Because all five signal features are distinct,
+
+$$
+\lVert z\rVert_0=5.
+$$
+
+Mperp tokens do not activate any coordinate of z. The fixed teacher is
+
+$$
+W_{\mathrm{true}}\in\{0,1\}^{50\times20}.
+$$
+
+Every teacher column contains exactly five ones (`density=0.1`). The target is
+
+$$
+y=W_{\mathrm{true}}z\in\mathbb{R}^{50}.
+$$
+
+Thus, y is the sum of the five binary code columns corresponding to the active
+signal features. The teacher does not reweight M1 and M2.
+
 ## Model
 
-```text
-Q = X WQ
-K_att = X WK
-A = softmax(Q K_att^T / sqrt(d_qk))
-X_tilde = A X
-V = ReLU(X_tilde WV)
-h = sum_tokens(V)
-y_hat = h Wout^T
-loss = 0.5 * mean_batch ||y_hat - y||_2^2
-```
+The network is a single-head softmax attention layer followed by a ReLU value
+map, sum pooling, and a linear readout:
+
+$$
+Q=XW_Q,\qquad K_{\mathrm{att}}=XW_K,
+$$
+
+$$
+A=\operatorname{softmax}
+\left(
+\frac{QK_{\mathrm{att}}^\top}{\sqrt{d_{qk}}}
+\right),
+\qquad
+\widetilde X=AX,
+$$
+
+$$
+V=\operatorname{ReLU}(\widetilde XW_V),
+\qquad
+h=\sum_{k=1}^{K}V_k,
+$$
+
+$$
+\widehat y=hW_{\mathrm{out}}^\top.
+$$
+
+There is no additional MLP. Pooling is a **sum**, not a mean, so readout scale
+can depend on K.
+
+Matrix dimensions are
+
+$$
+W_Q,W_K,W_V\in\mathbb{R}^{100\times100},
+\qquad
+W_{\mathrm{out}}\in\mathbb{R}^{50\times100}.
+$$
+
+For minibatch size `N=32`, the training objective is
+
+$$
+\mathcal{L}
+=
+\frac{1}{N}
+\sum_{i=1}^{N}
+\frac{1}{2}
+\left\lVert
+\widehat y^{(i)}-y^{(i)}
+\right\rVert_2^2.
+$$
 
 See [docs/EXPERIMENT_202.md](docs/EXPERIMENT_202.md) for the complete data
 model, optimizer, dimensions, and evaluation protocol. See
