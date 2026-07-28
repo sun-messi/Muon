@@ -52,6 +52,11 @@ model, optimizer, dimensions, and evaluation protocol. See
 [docs/CODE_MAP.md](docs/CODE_MAP.md) for how the original numbered scripts were
 reorganized into this standalone package.
 
+For the formal mathematical specification, use:
+
+- [Experiment 202 data and network](docs/EXPERIMENT_202_SETUP.md)
+- [Rendered PDF](docs/EXPERIMENT_202_SETUP.pdf)
+
 ## Install
 
 ```bash
