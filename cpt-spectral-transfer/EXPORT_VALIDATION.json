@@ -1,0 +1,12 @@
+{
+  "unit_tests_passed": 61,
+  "unit_tests_failed": 0,
+  "training_cli_help_checked": true,
+  "shell_script_syntax_checked": true,
+  "unmodified_source_file_hashes_verified": 35,
+  "recognized_credential_pattern_scan_passed": true,
+  "data_or_model_weights_in_export": false,
+  "h100_training_tested": false,
+  "large_model_distributed_training_implemented": false,
+  "notes": "Reference code migration, not a claim that the proposed larger-model experiment has been implemented or run. Only load checkpoints you trust."
+}

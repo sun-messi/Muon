@@ -1,0 +1,187 @@
+{
+  "purpose": "Portable snapshot of verified Pythia-31M CPT algorithms and corpus analysis. Large-model distributed training is not implemented.",
+  "unmodified_source_files": [
+    {
+      "path": "adaptive_pion.py",
+      "sha256": "7cc4c471a9a9037be5bddedcc515f6b6efddb3659e56be186335b8a8d26ed444",
+      "bytes": 17852
+    },
+    {
+      "path": "analyze_corpus_distances.py",
+      "sha256": "2f52d8b42942777bab668673c44a35109e20a6ecec694a32c26c464f86b1633d",
+      "bytes": 16563
+    },
+    {
+      "path": "analyze_real_task_conflict_gradients.py",
+      "sha256": "5edec9bc9444e2c66bbf1222b8c5503dfba511e3769d98a81c319b2dac9ddb06",
+      "bytes": 6642
+    },
+    {
+      "path": "analyze_real_task_conflict_one_step.py",
+      "sha256": "9c4c6beea3470b2aca62b132c39154fe7b626bb915d3c2b8b3b68e6577958166",
+      "bytes": 10988
+    },
+    {
+      "path": "audit_real_task_conflict.py",
+      "sha256": "7ccb79cdcd58e5b60429d9b00f9f8913e3f38a6ee321f08e5c7f2f079723db07",
+      "bytes": 8911
+    },
+    {
+      "path": "download_pdb_mmcif_subset.py",
+      "sha256": "ff9f7173eb7ebb3aca0037d0d17d1c969240e5e691eda7fb891ba45d0364e680",
+      "bytes": 2229
+    },
+    {
+      "path": "lora_muon.py",
+      "sha256": "64c5a9094b0516356f5c58fb3f743464db199e2008a3779661896c696ebe36cd",
+      "bytes": 4365
+    },
+    {
+      "path": "middata.py",
+      "sha256": "49b02a15e8204b5f1252101d00827bba719a0d01f86adc6cd497ba28f99844ea",
+      "bytes": 6922
+    },
+    {
+      "path": "multidataset_cpt_data.py",
+      "sha256": "7d40d5000f2f2b18c4f7d2a85aaa8a5a6aeacebc68e6eaf628816bdb1baddb9b",
+      "bytes": 10297
+    },
+    {
+      "path": "openwebmath_data.py",
+      "sha256": "9e9f1cc3564d98590fc6c6718f30a21837a08ce067202e71e8d80bac5c96af20",
+      "bytes": 3035
+    },
+    {
+      "path": "openwebmath_pile_replay_data.py",
+      "sha256": "5f06c93f01e67eec811abf6cfd2f34cf0a487d770001a3df20293b762fab46c9",
+      "bytes": 12278
+    },
+    {
+      "path": "ord_full_dataset.py",
+      "sha256": "f39698a3ef87d931adae326a173d88f6129165386a23f1daaab898c0df7b3c4e",
+      "bytes": 2400
+    },
+    {
+      "path": "prepare_multidataset_cpt.py",
+      "sha256": "949f5a4e485719562a53436dbf52f1e91fefa9976e09bae56183692844e3704c",
+      "bytes": 9548
+    },
+    {
+      "path": "prepare_openwebmath_pile_replay_rho.py",
+      "sha256": "3af7325f05f481abc9dd0c456a82115cc096e1872a09dac4183b930ff10b9f4b",
+      "bytes": 15117
+    },
+    {
+      "path": "prepare_ord_full_sequence.py",
+      "sha256": "3bc3dc61c3671473c139e833044531c4b3064aa31d52a90cc77a43d07f91c922",
+      "bytes": 7459
+    },
+    {
+      "path": "prepare_real_task_conflict.py",
+      "sha256": "f054597fc25765489f9ea4ac715eb0ad46cdae65aa9f84538d9ca9c3e44080b2",
+      "bytes": 5285
+    },
+    {
+      "path": "prepare_real_task_domain_inputs.py",
+      "sha256": "6eb4a7758dfc58221605d3e2710639a42ec28a6ff9e154202c3ca2f5cb374afd",
+      "bytes": 12524
+    },
+    {
+      "path": "prepare_real_task_eight_inputs.py",
+      "sha256": "3d18baf7163f793eb5c2e5603099c1487e1077342969984c417ced5b5e59b6e9",
+      "bytes": 7872
+    },
+    {
+      "path": "prepare_real_task_near_pile_inputs.py",
+      "sha256": "ad4ce23d14f652f130a24f6d04f3443990bf61f05042cb4e9c48803ec38ed5b7",
+      "bytes": 5972
+    },
+    {
+      "path": "prepare_real_task_structured_inputs.py",
+      "sha256": "24e29fa94440ea67b148139a58311fe9444ef820812b9e131cc808a8072220fd",
+      "bytes": 7001
+    },
+    {
+      "path": "report_corpus_distances.py",
+      "sha256": "b252ab0b1b96df6901eb2d5424ed9a038fda563f727241c80fec0d6eacbbf28d",
+      "bytes": 8992
+    },
+    {
+      "path": "report_real_task_conflict.py",
+      "sha256": "f8bc8141d7a56692b941b24090b1dfc963aa8086a29054bf86622c150c212300",
+      "bytes": 17344
+    },
+    {
+      "path": "report_real_task_eight.py",
+      "sha256": "0a1ce25916f731d0fb5dba0163a60b1bfcc11d1e6f85a6d2c828ed8def2d4fc3",
+      "bytes": 13272
+    },
+    {
+      "path": "report_real_task_structured_four.py",
+      "sha256": "0a4d90ee5160aca580d7d83e000481c2a94d8784ad357f9298df8c441ca43bc6",
+      "bytes": 18723
+    },
+    {
+      "path": "run_real_task_conflict.py",
+      "sha256": "f29d651a2ee5988b4d2449799f66fab93b79550725d9790d0f767d8fe32e4459",
+      "bytes": 5517
+    },
+    {
+      "path": "run_real_task_conflict_diagnostics.py",
+      "sha256": "0feee24f326237b1dde8357ce49583a64f0b83d3ceb846516040608e86b0eca0",
+      "bytes": 5883
+    },
+    {
+      "path": "smoltalk_data.py",
+      "sha256": "2cb9442ba3f2fee13123d81ca234e622c2006dd8c5ebeba9bb8b28a0cbcf376a",
+      "bytes": 6868
+    },
+    {
+      "path": "spectral.py",
+      "sha256": "3c63ae2ed3ab1e581613d3ac7f08f6b1ba8b5503f6b6695bdb2a3c016d4b5407",
+      "bytes": 27466
+    },
+    {
+      "path": "tests/test_adaptive_pion.py",
+      "sha256": "0622327e0a453a4d8deabff3e3cd2d6e815760f3fa64cf27702126b59d1b586d",
+      "bytes": 5706
+    },
+    {
+      "path": "tests/test_core.py",
+      "sha256": "66d667ecf7d9e7d148ca2c6eb157a4e2e163b3862ad5396275e32bf76b0d8976",
+      "bytes": 23470
+    },
+    {
+      "path": "tests/test_lora_muon.py",
+      "sha256": "7574bcdbb788f0856f2ce8c4da72faa5bed5cba1be8db16aff6d969cdc0228b8",
+      "bytes": 2875
+    },
+    {
+      "path": "tests/test_smoltalk_paired.py",
+      "sha256": "785a3d9179cbee5270abab3cf8090ee86a59c1f11aebe4254d3aab314c050b20",
+      "bytes": 4623
+    },
+    {
+      "path": "train_mid.py",
+      "sha256": "23cbc9bd49bd7bb5590cd3fd4fcf18376950e20f77e59916e799a4a2d6fb8a7a",
+      "bytes": 25241
+    },
+    {
+      "path": "train_openwebmath.py",
+      "sha256": "354255bb1260a30e315e68ab363dbdceecf121aaf579ee68587b5bb4d75123f4",
+      "bytes": 174
+    },
+    {
+      "path": "train_smoltalk.py",
+      "sha256": "3fc53edaccd811005e04fba55130eba275f082c3566fb93167b940bf3fa5c135",
+      "bytes": 54398
+    }
+  ],
+  "excluded": [
+    "token caches",
+    "raw corpora",
+    "model checkpoints",
+    "credentials",
+    "training logs"
+  ]
+}

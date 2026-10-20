@@ -1,0 +1,5 @@
+reference,metric,partial_rank_rho_controlling_initial_new_ce,rho_gap_divided_by_initial_new_ce
+old_replay,token_js,0.9102388136743105,0.9235294117647058
+old_replay,embedding_mmd2_bw1,0.9106111560679816,0.9
+pile_heldout,token_js,0.9102388136743105,0.9235294117647058
+pile_heldout,embedding_mmd2_bw1,0.9316836599756797,0.9264705882352942
